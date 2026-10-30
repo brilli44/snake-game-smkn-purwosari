@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Permainan Ular</title>
+
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+
+        /* Background gambar */
+        background-image: url("https://png.pngtree.com/background/20250514/original/pngtree-grass-lush-green-lawn-picture-image_16542474.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      h1 {
+        color: white;
+        text-shadow: 2px 2px 4px black;
+      }
+
+      canvas {
+        background-color: black;
+        border: 4px solid white;
+        max-width: 90vw;
+        height: auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>🐍 Permainan Ular</h1>
+
+    <canvas
+      id="gameCanvas"
+      width="400"
+      height="400"
+    ></canvas>
+
+<div style="text-align: center; margin-top: 15px;">
+    <button id="mulai">Mulai / Ulangi</button> </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
