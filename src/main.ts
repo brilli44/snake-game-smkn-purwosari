@@ -1,379 +1,489 @@
-// SMK PURWOSARI 
+// ==========================================
+// 1. DATA AWAL PERMAINAN
+// ==========================================
 
-//Data posisi tubuh ular disimpan dalam array. Index 0 adalah kepala ular.
+// Menyimpan posisi tubuh ular.
+// Index 0 merupakan kepala ular.
 const tubuh_ular = [
-    { x: 100, y: 100 },
-    { x: 75, y: 100 },
-    { x: 50, y: 100 }
+    { x: 100, y: 100 },// 0
+    { x: 75, y: 100 },//1
+    { x: 50, y: 100 }//2
 ];
 
-
-//apel
-//Variabel apel menyimpan koordinat X dan Y apel. Let dipakai karena posisinya berubah.
+// Menyimpan posisi apel
 let apel = {
     x: 200,
     y: 100
 };
-//rintangan
-//Array ini menyimpan data rintangan: posisi, ukuran, dan warna.
-const rintangan_baru= [
-    {
-    x: 150,
-    y: 200,
-    width: 100,
-    height: 30,
-    color: "darkblue"
-},
-{
-    x: 50,
-    y: 300,
-    width: 80,
-    height: 30,
-    color: "darkgreen"
-},
 
+// Menyimpan data rintangan
+const rintangan_baru = [
+    {
+        x: 150,
+        y: 200,
+        width: 100,
+        height: 30,
+        color: "darkblue"
+    },
+    {
+        x: 50,
+        y: 300,
+        width: 80,
+        height: 30,
+        color: "darkgreen"
+    }
 ];
 
-// Deklarasi variabel permainan. string = teks, number = angka, boolean = true/false.
+
+// ==========================================
+// 2. DEKLARASI VARIABEL PERMAINAN
+// ==========================================
+
 const namaPemain: string = "Rumi";
+
 let skor: number = 0;
 let nyawa: number = 3;
 let levelGame: number = 1;
+
 let gameOver: boolean = false;
 let sedangPause: boolean = false;
-// variabel tambahan untuk tombol mulai permainan 
 let permainanDimulai: boolean = false;
+
 let intervalGame: number | undefined;
 
-//Contoh penambahan nilai. Ini berjalan saat file dimuat, bukan saat apel dimakan.
-skor = skor + 10;
-nyawa = nyawa -1;
-levelGame = levelGame + 1;
 
-skor += 20;   // % 
-nyawa -= 2;
-levelGame += 2;
+// ==========================================
+// 3. MENGHUBUNGKAN CANVAS
+// ==========================================
 
-console.log(20*2);
-console.log(20/2);
-console.log(17%5);
-
-//Ambil elemen canvas dari HTML dan siapkan context 2D untuk menggambar.
 const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d")!;
 
-console.log("Nama Pemain:", namaPemain);
-console.log("Skor:", skor);
-console.log("Nyawa:", nyawa);  
-console.log("Level:", levelGame);
-console.log("Game Over:", gameOver);
-console.log("Sedang Pause:", sedangPause);
 
-skor = 100;
-levelGame = 2;
+// ==========================================
+// 4. MENGATUR ARAH GERAK ULAR
+// ==========================================
 
-console.log("Skor setelah berubah:", skor);
-console.log("Level setelah berubah:", levelGame);
+// deklarasi : setting nilai awal dari suatu variabel 
 
-
-// for (let i = 0; i < 5; i++) { // increment = selalu bertambah , decrement  (i--)
-//     tubuh_ular.push({
-//         x: 100 - i * 25, // 100 = 0 , 75 , 50 , 25 , 0 
-//         y: 100
-//     });
-// } bagian ini dikomen aja 
-
-// for (let i = 0 ; i < 4; i++){
-//     console.log(i);
-// }
-
- //Fungsi untuk menggambar semua bagian ular; forEach mengulang setiap bagian.
-function bagianUlar () {
-tubuh_ular.forEach((bagian, index) => {
-  if(index === 0) {
-    ctx.fillStyle = "blue";
-  } else if (index % 2 === 0) {
-    ctx.fillStyle = "yellow";
-  } else {
-    ctx.fillStyle = "lime";
-  }
-
-  ctx.fillRect(
-    bagian.x,
-    bagian.y,
-    20,
-    20
-  );
-});
-}
-
-bagianUlar();
-
-//Fungsi untuk menggambar apel/umpan pada koordinat X,Y dengan warna tertentu.
-function umpan (x : number, y : number, warna : string )  {
-    ctx.fillStyle = warna;
-    ctx.fillRect(x, y, 20, 20);
-}
-
-umpan (100 , 350, "blue");
-umpan (150 , 350, "orange");
-umpan (280 , 350 , "red");
-
-
-//Fungsi untuk menggambar semua rintangan yang tersimpan dalam array.
-function rintangan (){
-    rintangan_baru.forEach ((rintangan) => {
-        ctx.fillStyle = rintangan.color;
-        ctx.fillRect(
-            rintangan.x,
-            rintangan.y,
-            rintangan.width,
-            rintangan.height
-        );
-    })
-};
-
-rintangan();
-
-//Fungsi menghitung koordinat baru. Contoh: hitungGerak(100, 25) menghasilkan 125.
-function hitungGerak(x : number , langkah: number) : number {
-return x + langkah;
-}
-
-const koordinatBaru = hitungGerak(100, 10); 
-console.log("Koordinat Baru:", koordinatBaru);
-
-console.log("koordinat baru " , hitungGerak(50, -20));
-
-function tambah (a: number, b: number): number {
-    return a + b;
-}
-
-const hasilTambah = tambah(10, 10);
-console.log("Hasil Penjumlahan:", hasilTambah);
-
-//Mendeteksi tombol yang ditekan. event.key akan berisi ArrowUp, ArrowDown, dan sebagainya.
-window.addEventListener("keydown", (event) => {
-    console.log(event.key);
-});
-
-//Variabel arah menyimpan arah gerak ular saat ini.
 let arah = "kanan";
-
+// const 
+// variabel : slot / tempat untuk menyimpan data yang bisa dipanggil dan diubah nilainya
+// digunakan untuk mendeteksi tombol keywborad / panah ditekan dan mengubah arah ular
 window.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowUp" && arah !== "bawah") {
+// untuk mengatur atau mendengarkan atau mengikuti perintah yang sdh kalian pencet di keyboard
+    if (!permainanDimulai || gameOver) return; // return : mengembalikan nilai dari suatu fungsi , 
+    // jika kondisi ini terpenuhi maka tidak akan menjalankan kode dibawahnya
+
+    if (e.key === "ArrowUp" && arah !== "bawah") {  // boolean itu memiliki dua hasil , false !== true === 
         arah = "atas";
+
     } else if (e.key === "ArrowDown" && arah !== "atas") {
         arah = "bawah";
+
     } else if (e.key === "ArrowLeft" && arah !== "kanan") {
         arah = "kiri";
+
     } else if (e.key === "ArrowRight" && arah !== "kiri") {
         arah = "kanan";
+    }
+
+    // Mencegah halaman ikut bergulir saat tombol panah ditekan
+    if (e.key.startsWith("Arrow")) {
+        e.preventDefault();
     }
 });
 
 
-//Fungsi utama gerak ular: hitung kepala baru, cek tabrakan, lalu perbarui array tubuh.
+// ==========================================
+// 5. FUNGSI MENGGAMBAR PERMAINAN
+// ==========================================
+
+
+// function : untuk menampung kumpulan perintah yang bisa dipanggil berkali-kali
+
+
+// Menggambar background
+function gambarBackground() {
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+
+// Menggambar seluruh tubuh ular
+function bagianUlar() {// function void : fungsi default 
+
+    tubuh_ular.forEach((bagian, index) => {
+
+        if (index === 0) {
+            ctx.fillStyle = "blue";
+
+        } else if (index % 2 === 0) {
+            ctx.fillStyle = "yellow";
+
+        } else {
+            ctx.fillStyle = "lime";
+        }
+
+        ctx.fillRect(
+            bagian.x,
+            bagian.y,
+            20,
+            20
+        );
+    });
+}
+
+
+// Menggambar apel atau umpan
+//function parameter : untuk menampung data yang dikirimkan ke fungsi
+function umpan (x: number, y: number, warna: string) {
+
+    ctx.fillStyle = warna ;
+    ctx.fillRect(x, y, 20, 20);
+}
+
+
+// Menggambar seluruh rintangan
+function rintangan() {
+
+    rintangan_baru.forEach((batu) => {
+
+        ctx.fillStyle = batu.color;
+
+        ctx.fillRect(
+            batu.x,
+            batu.y,
+            batu.width,
+            batu.height
+        );
+    });
+}
+
+
+// Menampilkan skor dan nyawa
+function tampilkanStatus() {
+
+    ctx.fillStyle = "white";
+    ctx.font = "16px Arial";
+    ctx.textAlign = "left";
+
+    ctx.fillText(`Skor: ${skor}`, 10, 20);
+    ctx.fillText(`Nyawa: ${nyawa}`, 10, 40);
+}
+
+
+// Menggambar seluruh tampilan permainan
+function gambarPermainan() {
+
+    gambarBackground();
+    bagianUlar();
+    umpan(apel.x, apel.y, "red");
+    rintangan();
+    tampilkanStatus();
+}
+
+
+// ==========================================
+// 6. RESET POSISI ULAR
+// ==========================================
+
+function resetPosisiUlar() {
+    // splice untuk menambahkan data di depan , dan menghapus data yng paling belakang 
+    tubuh_ular.splice(
+        0,
+        tubuh_ular.length,
+        { x: 100, y: 100 },
+        { x: 75, y: 100 },
+        { x: 50, y: 100 }
+    );
+
+    arah = "kanan";
+}
+
+
+// ==========================================
+// 7. PROSES GAME OVER
+// ==========================================
+
+function prosesGameOver() {
+
+    gameOver = true;
+    permainanDimulai = false;
+
+    if (intervalGame !== undefined) {
+
+        clearInterval(intervalGame);
+        intervalGame = undefined;
+    }
+}
+
+
+// ==========================================
+// 8. PROSES TABRAKAN DAN PENGURANGAN NYAWA
+// ==========================================
+
+function prosesTabrakan() {
+
+    // Mengurangi nyawa sebanyak satu
+
+    // ++ : increment fungsi untuk selalu menambahkan data 
+    //-- : decrement fungsi untuk selalu mengurangi data
+    nyawa--;
+
+    console.log("Nyawa tersisa:", nyawa);
+
+    if (nyawa <= 0) {
+
+        // Jika nyawa habis, permainan berakhir
+        prosesGameOver();
+
+    } else {
+
+        // Jika masih ada nyawa, posisi ular direset
+        resetPosisiUlar();
+    }
+}
+
+
+// ==========================================
+// 9. FUNGSI GERAK ULAR
+// ==========================================
+
 function gerakUlar() {
+
     if (gameOver) return;
 
-//Ambil bagian pertama array sebagai kepala ular.
+    // Mengambil posisi kepala ular
     const kepala = tubuh_ular[0];
 
-    //Salin posisi kepala saat ini sebagai titik awal untuk menghitung posisi berikutnya.
+    // Menyiapkan posisi kepala yang baru
     let kepalaBaru = {
         x: kepala.x,
         y: kepala.y
     };
 
-    // Menggerakkan ular sesuai arah
+
+    // Menghitung gerakan berdasarkan arah
     if (arah === "atas") {
-        kepalaBaru.y = hitungGerak(kepala.y, -25);
+
+        kepalaBaru.y -= 25;
+
     } else if (arah === "bawah") {
-        kepalaBaru.y = hitungGerak(kepala.y, 25);
+
+        kepalaBaru.y += 25;
+
     } else if (arah === "kiri") {
-        kepalaBaru.x = hitungGerak(kepala.x, -25);
+
+        kepalaBaru.x -= 25;
+
     } else if (arah === "kanan") {
-        kepalaBaru.x = hitungGerak(kepala.x, 25);
+
+        kepalaBaru.x += 25;
     }
 
-    // Memeriksa tabrakan dengan dinding
+
+    // --------------------------------------
+    // 9A. MENGECEK TABRAKAN DENGAN DINDING
+    // --------------------------------------
+
     if (
         kepalaBaru.x < 0 ||
         kepalaBaru.y < 0 ||
         kepalaBaru.x + 20 > canvas.width ||
         kepalaBaru.y + 20 > canvas.height
     ) {
-        gameOver = true;
+
+        prosesTabrakan();
         return;
     }
 
-    // Apel dimakan jika koordinat kepala baru sama persis dengan koordinat apel.
-    // Memeriksa apakah apel dimakan
-    const makanApel =
-        kepalaBaru.x === apel.x &&
-        kepalaBaru.y === apel.y;
 
-    // Memeriksa tabrakan dengan rintangan
+    // --------------------------------------
+    // 9B. MENGECEK TABRAKAN DENGAN RINTANGAN
+    // --------------------------------------
+
     for (let batu of rintangan_baru) {
+
         if (
             kepalaBaru.x < batu.x + batu.width &&
             kepalaBaru.x + 20 > batu.x &&
             kepalaBaru.y < batu.y + batu.height &&
             kepalaBaru.y + 20 > batu.y
         ) {
-            gameOver = true;
+
+            prosesTabrakan();
             return;
         }
     }
 
 
-    //unshift() menambahkan kepala baru ke depan array tubuh ular.
-    // Menambahkan kepala baru
+    // --------------------------------------
+    // 9C. MENGECEK APAKAH ULAR MAKAN APEL
+    // --------------------------------------
+
+    const makanApel =
+        kepalaBaru.x === apel.x &&
+        kepalaBaru.y === apel.y;
+
+
+    // Menambahkan kepala baru di depan array
     tubuh_ular.unshift(kepalaBaru);
 
+
     if (makanApel) {
-        //Tambah 10 poin setiap apel dimakan. Skor bertambah hanya pada kondisi ini.
+
+        // Menambah skor sebanyak 10
         skor += 10;
 
         console.log("Apel dimakan!");
         console.log("Skor:", skor);
 
-        //Acak posisi apel pada grid 25 piksel, lalu pastikan tidak menimpa ular/rintangan.
-        // Memindahkan apel ke posisi baru
+
+        // Memindahkan apel ke posisi baru secara acak
         do {
-                 apel.x = Math.floor(Math.random() * 16) * 25;
-                apel.y = Math.floor(Math.random() * 16) * 25;
+
+            apel.x = Math.floor(Math.random() * 16) * 25;
+            apel.y = Math.floor(Math.random() * 16) * 25;
+
         } while (
+
+            // Memastikan apel tidak berada di tubuh ular
             tubuh_ular.some(
-                bagian =>
+                (bagian) =>
                     bagian.x === apel.x &&
                     bagian.y === apel.y
             ) ||
+
+            // Memastikan apel tidak berada di rintangan
             rintangan_baru.some(
-                batu =>
+                (batu) =>
                     apel.x < batu.x + batu.width &&
                     apel.x + 20 > batu.x &&
                     apel.y < batu.y + batu.height &&
                     apel.y + 20 > batu.y
             )
         );
+
     } else {
-        //pop() menghapus ekor terakhir. Saat makan apel, pop tidak dijalankan sehingga ular memanjang.
+
+        // Menghapus ekor jika ular tidak makan apel
         tubuh_ular.pop();
     }
 }
 
-//Game loop berjalan berulang: bersihkan canvas, gerakkan ular, lalu gambar ulang objek.
-function gameLoop(){
-    if (!permainanDimulai || sedangPause || gameOver) {
+
+// ==========================================
+// 10. MENAMPILKAN GAME OVER
+// ==========================================
+
+function tampilkanGameOver() {
+
+    ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "red";
+    ctx.font = "30px Arial";
+    ctx.textAlign = "center";
+
+    ctx.fillText(
+        "GAME OVER",
+        canvas.width / 2,
+        canvas.height / 2
+    );
+
+    ctx.fillStyle = "white";
+    ctx.font = "16px Arial";
+
+    ctx.fillText(
+        `Skor Akhir: ${skor}`,
+        canvas.width / 2,
+        canvas.height / 2 + 30
+    );
+
+    ctx.textAlign = "left";
+}
+
+
+// ==========================================
+// 11. GAME LOOP
+// ==========================================
+
+function gameLoop() {
+
+    if (!permainanDimulai || sedangPause) {
         return;
     }
+
+    // Membersihkan tampilan sebelumnya
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    gerakUlar();
-    bagianUlar();
-    umpan(apel.x, apel.y, "red");
-    rintangan();
+    // Gerakkan ular jika permainan belum berakhir
+    if (!gameOver) {
+        gerakUlar();
+    }
 
+    // Menggambar ulang seluruh objek
+    gambarPermainan();
+
+    // Jika permainan berakhir, tampilkan Game Over
     if (gameOver) {
-        ctx.fillStyle = "white";
-        ctx.font = "30px Arial";
-        ctx.textAlign = "center";
-        ctx.fillText(
-            "GAME OVER",
-            canvas.width / 2,
-            canvas.height / 2
-        );
-        ctx.textAlign = "left";
+        tampilkanGameOver();
+        return;
     }
 }
 
-//Fungsi untuk mereset kondisi permainan dan memulai interval game loop.
+
+// ==========================================
+// 12. FUNGSI MULAI PERMAINAN
+// ==========================================
+
 function mulaiPermainan() {
-    // Mencegah permainan berjalan dua kali
+
+    // Menghentikan interval sebelumnya jika masih berjalan
     if (intervalGame !== undefined) {
+
         clearInterval(intervalGame);
+        intervalGame = undefined;
     }
 
+
     // Mengembalikan posisi ular
-    //splice() mengganti isi array agar ular kembali ke posisi awal.
-    tubuh_ular.splice(
-       0,
-    tubuh_ular.length,
-    { x: 100, y: 100 },
-    { x: 75, y: 100 },
-    { x: 50, y: 100 }
-    );
+    resetPosisiUlar();
+
 
     // Mengembalikan posisi apel
     apel.x = 200;
     apel.y = 100;
 
-    // Mengatur ulang permainan
-    arah = "kanan";
+
+    // Mengatur ulang nilai permainan
     skor = 0;
+    nyawa = 3;
+    levelGame = 1;
+
     gameOver = false;
     sedangPause = false;
     permainanDimulai = true;
 
-    // Menggambar tampilan awal
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    bagianUlar();
-    umpan(apel.x, apel.y, "red");
-    rintangan();
 
-    // Menjalankan permainan setelah tombol ditekan
-    //Jalankan gameLoop setiap 200 ms (sekitar 5 kali per detik).
+    // Menggambar tampilan awal permainan
+    gambarPermainan();
+
+
+    // Menjalankan Game Loop setiap 200 milidetik
     intervalGame = window.setInterval(gameLoop, 200);
 }
 
-// Menghubungkan tombol Mulai dengan fungsi
-//Cari tombol dengan id "mulai" di HTML.
+
+// ==========================================
+// 13. MENGHUBUNGKAN TOMBOL MULAI
+// ==========================================
+
 const tombolMulai = document.getElementById("mulai");
 
-//Saat tombol Mulai diklik, jalankan fungsi mulaiPermainan().
 tombolMulai?.addEventListener("click", mulaiPermainan);
 
-// yang membuat ular langsung bergerak ketikaa awal halaman 
-// setInterval(gameLoop, 200); 
 
-
-//Pemeriksaan apel di bawah ini hanya berjalan sekali saat file dimuat; pengecekan utama ada di gerakUlar().
-if (
-    tubuh_ular[0].x === apel.x &&
-    tubuh_ular[0].y === apel.y
-) {
-    skor += 10;
-    console.log("Apel dimakan!");
-    console.log("Skor:", skor);
-} else {
-    console.log("Apel tidak dimakan!");
-}
-
-
-if (nyawa <= 0 ) {
-    console.log("Game Over!");
-} else if (nyawa === 1){
-    console.log("hati hati nyawa tinggal 1");
-} else {
-    console.log("Game masih berjalan, nyawa tersisa", nyawa);
-}
-
-// function bersihkanCanvas() {
-//     ctx.clearRect(0, 0, canvas.width, canvas.height);
-// }
-// bersihkanCanvas();
-
-// RINGKASANN KODE KODE YANG BELUM DIPAHAMI 
-// // - addEventListener("keydown", ...): mendeteksi tombol keyboard.
-// - if / else if: memilih tindakan berdasarkan kondisi.
-// - ===: membandingkan apakah nilai sama; !==: membandingkan apakah berbeda.
-// - &&: kedua kondisi harus benar; ||: salah satu kondisi benar.
-// - tubuh_ular[0]: mengambil kepala ular (index pertama).
-// - unshift(kepalaBaru): menambahkan kepala di awal array.
-// - pop(): menghapus bagian terakhir array (ekor).
-// - forEach(): menjalankan perintah untuk setiap item array.
-// - for...of: mengulang item array satu per satu.
-// - .some(): mengecek apakah setidaknya ada item yang memenuhi kondisi.
-// - Math.random() + Math.floor(): membuat koordinat apel acak.
+// Menampilkan tampilan awal sebelum permainan dimulai
+gambarPermainan();
